@@ -1,5 +1,6 @@
 package de.nebulit.domain
 
+import de.nebulit.common.CommandResult
 import de.nebulit.domain.commands.addtodo.AddTodoCommand
 import de.nebulit.events.TodoAddedEvent
 import org.axonframework.commandhandling.CommandHandler
@@ -20,10 +21,11 @@ class TodoAggregate {
 
     @CreationPolicy(AggregateCreationPolicy.ALWAYS)
     @CommandHandler
-    fun handle(command: AddTodoCommand) {
+    fun handle(command: AddTodoCommand):CommandResult {
         AggregateLifecycle.apply(
             TodoAddedEvent(command.aggregateId, command.name, command.description)
         )
+        return CommandResult(command.aggregateId, AggregateLifecycle.getVersion())
     }
 
     @EventSourcingHandler
